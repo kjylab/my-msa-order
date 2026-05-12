@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: order-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:7002/order_db
+    username: order-service
+    password: order-service
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:7003
+
+    consumer:
+      group-id: order-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    topic:
+      inventory-reserved-result: inventory-reserved-result-topic
+      inventory-reserve-request: inventory-reserve-request-topic
+
+server:
+  port: 8002
+
+grpc:
+  server:
+    port: 9002
+
+management:
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        health: healthz
+  endpoint:
+    health:
+      show-details: always

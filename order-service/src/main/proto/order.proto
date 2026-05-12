@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "dev.ktcloud.black.order.service.adapter.presentation.web.inbound.grpc";
+
+package order.service;
+
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (OrderResponseDto);
+  rpc FetchOrder (FetchOrderRequest) returns (OrderResponseDto);
+  rpc FetchOrders (Empty) returns (FetchOrdersResponse);
+}
+
+message OrderListItemResponseDto {
+  int64 inventoryId = 1;
+  string productId = 2;
+  string skuCode = 3;
+  int32 price = 4;
+  int32 quantity = 5;
+  string status = 6;
+}
+
+message OrderResponseDto {
+  int64 id = 1;
+  string status = 2;
+  repeated OrderListItemResponseDto orderLineItems = 3;
+}
+
+message CreateOrderRequestItem {
+  int64 inventoryId = 1;
+  string productId = 2;
+  string skuCode = 3;
+  int32 price = 4;
+  int32 quantity = 5;
+}
+
+message CreateOrderRequest {
+  repeated CreateOrderRequestItem items = 1;
+}
+
+message FetchOrderRequest {
+  int64 id = 1;
+}
+
+message Empty {}
+
+message FetchOrdersResponse {
+  repeated OrderResponseDto orders = 1;
+}
+
