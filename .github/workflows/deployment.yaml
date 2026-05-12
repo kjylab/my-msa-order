@@ -52,4 +52,4 @@ jobs:
           git config --global user.name "GitHub Action"
           git add .
           git commit -m "Update image tag to ${{ github.sha }}"
-          git push origin master
+          git push origin main
