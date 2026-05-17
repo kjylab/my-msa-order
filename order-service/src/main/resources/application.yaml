@@ -3,20 +3,20 @@ spring:
     name: order-service
 
   datasource:
-    url: jdbc:postgresql://localhost:7002/order_db
+    url: jdbc:postgresql://${DB_HOST:postgres.default.svc.cluster.local}:${DB_PORT:5432}/order_db
     username: order-service
     password: order-service
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     generate-ddl: true
     show-sql: true
 
   kafka:
-    bootstrap-servers: localhost:7003
-
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka.kafka.svc.cluster.local:9092}
+    
     consumer:
       group-id: order-service-group
       auto-offset-reset: earliest
