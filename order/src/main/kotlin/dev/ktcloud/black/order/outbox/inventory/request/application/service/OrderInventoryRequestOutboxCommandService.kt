@@ -9,10 +9,6 @@ import dev.ktcloud.black.order.outbox.inventory.request.application.port.outboun
 import dev.ktcloud.black.order.outbox.inventory.request.domain.entity.OrderInventoryRequestOutboxDomainEntity
 import dev.ktcloud.black.order.outbox.inventory.request.domain.exception.OrderInventoryRequestOutboxException
 import dev.ktcloud.black.order.outbox.inventory.request.domain.vo.OrderInventoryRequestOutboxStatus
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -50,6 +46,7 @@ class OrderInventoryRequestOutboxCommandService(
                 amount = domainEntity.amount,
             ),
             onSuccess = { domainEntity.updateStatus(OrderInventoryRequestOutboxStatus.PUBLISHED) },
+            onError = { domainEntity.updateStatus(OrderInventoryRequestOutboxStatus.FAILED) },
         )
 
         return domainEntity
@@ -59,12 +56,9 @@ class OrderInventoryRequestOutboxCommandService(
     override fun processAll() {
         val unProcessedList = orderInventoryRequestQueryOutboundPort.fetchUnprocessed()
 
-        runBlocking {
-            unProcessedList.map {
-                async(Dispatchers.IO) {
-                    processOrderInventoryRequestOutbox(it)
-                }
-            }.awaitAll()
+        unProcessedList.forEach { entity ->
+            val processed = processOrderInventoryRequestOutbox(entity)
+            orderInventoryRequestCommandOutboundPort.save(processed)
         }
     }
 }

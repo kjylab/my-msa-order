@@ -7,6 +7,7 @@ import dev.ktcloud.black.order.common.application.port.event.OrderInventoryEvent
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 
 @Component
 class OrderInventoryEventKafkaPublisher(
@@ -22,9 +23,12 @@ class OrderInventoryEventKafkaPublisher(
     ) {
         val message = mapper.toMessage(event)
 
-        kafkaTemplate.send(topicName, message.orderId.toString(), message).whenComplete { _, e ->
-            if (e != null) onError.invoke()
-            else onSuccess.invoke()
+        try {
+            kafkaTemplate.send(topicName, message.orderId.toString(), message)
+                .get(5, TimeUnit.SECONDS)
+            onSuccess.invoke()
+        } catch (e: Exception) {
+            onError.invoke()
         }
     }
 }
