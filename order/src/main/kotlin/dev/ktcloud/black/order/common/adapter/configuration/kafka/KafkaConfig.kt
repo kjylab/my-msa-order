@@ -1,6 +1,6 @@
 package dev.ktcloud.black.order.common.adapter.configuration.kafka
 
-import dev.ktcloud.black.order.common.adapter.infrastructure.kafka.model.InventoryReservedResultMessage
+import dev.ktcloud.black.order.order.application.dto.event.inbound.InventoryReservedResultEvent
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
@@ -18,8 +18,8 @@ class KafkaConfig(
     private val bootstrapServers: String
 ) {
     @Bean
-    fun inventoryReservedResultConsumerFactory(): ConsumerFactory<String, InventoryReservedResultMessage> {
-        val deserializer = JsonDeserializer(InventoryReservedResultMessage::class.java).apply {
+    fun inventoryReservedResultConsumerFactory(): ConsumerFactory<String, InventoryReservedResultEvent> {
+        val deserializer = JsonDeserializer(InventoryReservedResultEvent::class.java).apply {
             addTrustedPackages("dev.ktcloud.black.*")
             setUseTypeHeaders(false)
         }
@@ -37,8 +37,8 @@ class KafkaConfig(
     @Bean
     fun inventoryReservedResultContainerFactory(
         configurer: ConcurrentKafkaListenerContainerFactoryConfigurer
-    ): ConcurrentKafkaListenerContainerFactory<String, InventoryReservedResultMessage> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, InventoryReservedResultMessage>()
+    ): ConcurrentKafkaListenerContainerFactory<String, InventoryReservedResultEvent> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, InventoryReservedResultEvent>()
         val cf = inventoryReservedResultConsumerFactory()
 
         factory.consumerFactory = cf
