@@ -44,6 +44,12 @@ subprojects {
 		implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 		compileOnly("org.projectlombok:lombok")
 		annotationProcessor("org.projectlombok:lombok")
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+		testImplementation("io.mockk:mockk:1.13.10")
+	}
+
+	tasks.withType<Test> {
+		useJUnitPlatform()
 	}
 
 	tasks.getByName<Jar>("jar") {
