@@ -25,7 +25,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build & Test
-        run: ./gradlew build --no-daemon
+        run: ./gradlew check --no-daemon
 
       - name: SonarCloud scan
         if: vars.SONARCLOUD_ENABLED == 'true'
