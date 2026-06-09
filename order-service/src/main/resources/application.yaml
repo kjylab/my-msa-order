@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:postgres.default.svc.cluster.local}:${DB_PORT:5432}/order_db
     username: order-service
-    password: order-service
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
